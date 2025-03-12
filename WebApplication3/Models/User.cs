@@ -15,7 +15,7 @@ namespace WebApplication3.Models
         [Required(ErrorMessage = "Пароль обязателен")]
         [StringLength(100, MinimumLength = 5, ErrorMessage = "Пароль должен быть не менее 5 символов")]
         public string Pwd { get; set; } = string.Empty;
-
+         
         public string Salt { get; set; } = GenerateSalt();
 
         public static string GenerateSalt()
