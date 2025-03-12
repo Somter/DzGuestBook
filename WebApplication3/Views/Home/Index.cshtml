@@ -1,0 +1,46 @@
+﻿<div class="container">
+    <h1>Гостевая книга</h1>
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <p>Привет, @User.Identity.Name!</p>
+        <div class="form-container">
+            <form method="post" action="/Home/AddMessage">
+                <textarea name="messageText" class="form-control" required placeholder="Введите сообщение..."></textarea>
+                <button type="submit">Добавить сообщение</button>
+            </form>
+            <form method="post" action="/Home/Logout">
+                <button type="submit">Выход</button>
+            </form>
+        </div>
+    }
+    else
+    {
+        <div class="link-container">
+            <a href="/Auth/Login" class="styled-link">Войти в систему</a>
+            <a href="/Auth/Register" class="styled-link">Регистрация</a>
+        </div>
+    }
+
+    <div class="messages-container">
+        @if (ViewBag.Messages != null && ((IEnumerable<dynamic>)ViewBag.Messages).Any())
+        {
+            @foreach (var msg in ViewBag.Messages)
+            {
+                <div class="message-container">
+                    <div class="message-user">Пользователь: @msg.Name</div>
+                    <div class="message-text">@msg.msg.MessageText</div>
+                    <div class="message-date">@msg.msg.MessageDate</div>
+                </div>
+            }
+        }
+        else
+        {
+            <p>Еще нет сообщений.</p>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

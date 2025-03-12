@@ -1,0 +1,37 @@
+﻿@model WebApplication3.Models.User
+
+@{
+    ViewData["Title"] = "Выход";
+}
+
+<h2>Выход</h2>
+
+@if (ViewBag.Error != null)
+{
+    <p class="text-danger">@ViewBag.Error</p>
+}
+
+<form method="post">
+    <div>
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" required />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label asp-for="Pwd"></label>
+        <input asp-for="Pwd" type="password" class="form-control" required />
+        <span asp-validation-for="Pwd" class="text-danger"></span>
+    </div>
+
+    <button type="submit">Войти</button>
+</form>
+
+<div class="link-container">
+    <a href="/Auth/Register" class="styled-link">Регистрация</a>
+    <a href="/Home/Index" class="styled-link">Войти как гость</a>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

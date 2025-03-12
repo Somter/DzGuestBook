@@ -1,0 +1,242 @@
+body {
+    background-color: #121212;
+    color: #e0e0e0;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 600px;
+    margin: auto;
+    background: #1e1e1e;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+h1 {
+    text-align: center;
+}
+
+.form-container, .messages-container {
+    margin-top: 20px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background: #333;
+    border: 1px solid #444;
+    color: white;
+    border-radius: 5px;
+}
+
+button {
+    background-color: #6200ea; /* Фиолетовый */
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
+    width: 100%;
+    transition: background 0.3s;
+}
+
+    button:hover {
+        background-color: #3700b3; /* Темно-фиолетовый при наведении */
+    }
+
+.link-container {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.styled-link {
+    display: inline-block;
+    background-color: #6200ea; /* Фиолетовый */
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background 0.3s;
+    margin: 5px;
+}
+
+    .styled-link:hover {
+        background-color: #3700b3; /* Темно-фиолетовый при наведении */
+    }
+
+.message-container {
+    background: #252525;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.message-user {
+    font-weight: bold;
+}
+
+.message-text {
+    margin-top: 5px;
+}
+
+.message-date {
+    font-size: 0.9em;
+    color: #bbb;
+    margin-top: 5px;
+}
+
+a {
+    color: #bb86fc;
+}
+
+body {
+    background-color: #121212;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+}
+
+.message-container {
+    background-color: #1e1e1e;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.message-table {
+    width: 100%;
+}
+
+.message-user, .message-text, .message-date {
+    padding: 5px;
+}
+
+.form-control {
+    background-color: #2a2a2a;
+    color: white;
+    border: 1px solid #444;
+    border-radius: 5px;
+    width: 100%;
+    padding: 10px;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+.auth-links {
+    text-align: center;
+    margin-top: 15px;
+}
+
+    .auth-links a {
+        display: inline-block;
+        background-color: #007bff;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        text-decoration: none;
+        transition: background 0.3s;
+    }
+
+        .auth-links a:hover {
+            background-color: #0056b3;
+        }
+
+.link-container {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.styled-link {
+    display: inline-block;
+    background-color: #6200ea; /* Фиолетовый */
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background 0.3s;
+    margin: 5px;
+}
+
+    .styled-link:hover {
+        background-color: #3700b3; /* Темно-фиолетовый при наведении */
+        color: white;   
+    }
+/* Контейнер для формы */
+.container {
+    max-width: 600px;
+    margin: auto;
+    background: #1e1e1e;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+h1, h2 {
+    text-align: center;
+}
+
+/* Поля ввода */
+.form-control {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background: #333;
+    border: 1px solid #444;
+    color: white;
+    border-radius: 5px;
+}
+
+/* Стили для всех кнопок */
+button, .styled-link {
+    display: inline-block;
+    background-color: #6200ea; /* Фиолетовый */
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background 0.3s;
+    text-align: center;
+    width: 100%;
+    margin-top: 10px;
+}
+
+    button:hover, .styled-link:hover {
+        background-color: #3700b3; /* Темно-фиолетовый при наведении */
+    }
+
+/* Контейнер ссылок */
+.link-container {
+    text-align: center;
+    margin-top: 15px;
+}
+
+/* Стили для ссылок "Регистрация" и "Войти как гость" */
+.styled-link {
+    display: inline-block;
+    padding: 10px 15px;
+    width: auto;
+    margin: 5px;
+}
