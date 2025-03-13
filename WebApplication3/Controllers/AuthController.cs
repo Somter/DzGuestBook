@@ -49,13 +49,13 @@ namespace WebApplication3.Controllers
         {
             if (pwd != confirmPwd)
             {
-                ViewBag.Error = "Паролі не співпадають";
+                ViewBag.Error = "Пароли должны совпадать";
                 return View();
             }
 
             if (await _userRepository.GetByNameAsync(name) != null)
             {
-                ViewBag.Error = "Користувач вже існує";
+                ViewBag.Error = "Пользователь уже существует";
                 return View();
             }
 
