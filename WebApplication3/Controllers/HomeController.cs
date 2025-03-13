@@ -28,7 +28,7 @@ namespace WebApplication3.Controllers
             var messagesWithUsers = sortedMessages.Select(m => new
             {
                 msg = m,
-                Name = users.FirstOrDefault(u => u.Id == m.Id_User)?.Name ?? "Анонім"
+                Name = users.FirstOrDefault(u => u.Id == m.Id_User)?.Name ?? "Аноним"
             }).ToList();
 
             ViewBag.Messages = messagesWithUsers;
