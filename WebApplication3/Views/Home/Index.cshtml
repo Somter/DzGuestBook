@@ -5,8 +5,8 @@
     {
         <p>Привет, @User.Identity.Name!</p>
         <div class="form-container">
-            <form method="post" action="/Home/AddMessage">
-                <textarea name="messageText" class="form-control" required placeholder="Введите сообщение..."></textarea>
+            <form id="messageForm">
+                <textarea id="messageText" name="messageText" class="form-control" required placeholder="Введите сообщение..."></textarea>
                 <button type="submit">Добавить сообщение</button>
             </form>
             <form method="post" action="/Home/Logout">
@@ -22,25 +22,64 @@
         </div>
     }
 
-    <div class="messages-container">
-        @if (ViewBag.Messages != null && ((IEnumerable<dynamic>)ViewBag.Messages).Any())
-        {
-            @foreach (var msg in ViewBag.Messages)
-            {
-                <div class="message-container">
-                    <div class="message-user">Пользователь: @msg.Name</div>
-                    <div class="message-text">@msg.msg.MessageText</div>
-                    <div class="message-date">@msg.msg.MessageDate</div>
-                </div>
-            }
-        }
-        else
-        {
-            <p>Еще нет сообщений.</p>
-        }
+    <div class="messages-container" id="messages-container">
+        <p>Загрузка сообщений...</p>
     </div>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        $(document).ready(function () {
+            function loadMessages() {
+                $.getJSON("/Home/GetMessages", function (data) { 
+                    $("#messages-container").empty();
+                    if (data.length === 0) {
+                        $("#messages-container").append("<p>Еще нет сообщений.</p>");
+                    } else {
+                        data.forEach(function (msg) {
+                            $("#messages-container").append(`
+                                        <div class="message-container">
+                                            <div class="message-user">Пользователь: ${msg.userName}</div>
+                                            <div class="message-text">${msg.messageText}</div>
+                                            <div class="message-date">${new Date(msg.messageDate).toLocaleString()}</div>
+                                        </div>
+                                    `);
+                        });
+                    }
+                }).fail(function () {
+                    $("#messages-container").html("<p class='text-danger'>Ошибка загрузки сообщений.</p>");
+                });
+            }
+
+            loadMessages();
+
+            $("#messageForm").submit(function (event) {
+                event.preventDefault();
+                let messageText = $("#messageText").val().trim();
+
+                if (messageText === "") return;
+
+                $.ajax({
+                    url: "/Home/AddMessage",
+                    type: "POST",
+                    data: { messageText: messageText },
+                    success: function (response) {
+                        if (response.success) {
+                            $("#messageText").val("");
+                            loadMessages(); 
+                        } else {
+                            alert(response.error);
+                        }
+                    },
+                    error: function () {
+                        alert("Ошибка отправки сообщения.");
+                    }
+                });
+            });
+
+            setInterval(loadMessages, 10000);
+        });
+    </script>
 }

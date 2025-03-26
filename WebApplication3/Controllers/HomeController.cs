@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using WebApplication3.Repository;
+using WebApplication3.ViewModels;
 
 namespace WebApplication3.Controllers
 {
@@ -21,15 +22,23 @@ namespace WebApplication3.Controllers
         public async Task<IActionResult> Index()
         {
             var messages = await _messageRepository.GetAllAsync();
-            var sortedMessages = messages.OrderByDescending(m => m.MessageDate).ToList();
-
             var users = await _userRepository.GetAllAsync();
 
-            var messagesWithUsers = sortedMessages.Select(m => new
+            var messagesWithUsers = messages
+                .OrderByDescending(m => m.MessageDate)
+                .Select(m => new MessageViewModel
+                {
+                    Id = m.Id,
+                    MessageText = m.MessageText,
+                    MessageDate = m.MessageDate,
+                    UserName = users.FirstOrDefault(u => u.Id == m.Id_User)?.Name ?? "Аноним"
+                })
+                .ToList();
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest") 
             {
-                msg = m,
-                Name = users.FirstOrDefault(u => u.Id == m.Id_User)?.Name ?? "Аноним"
-            }).ToList();
+                return Json(messagesWithUsers);
+            }
 
             ViewBag.Messages = messagesWithUsers;
             return View();
@@ -39,7 +48,7 @@ namespace WebApplication3.Controllers
         public async Task<IActionResult> AddMessage(string messageText)
         {
             if (!User.Identity.IsAuthenticated)
-                return RedirectToAction("Index");
+                return Json(new { success = false, error = "Пользователь не авторизован." });
 
             int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
@@ -53,8 +62,30 @@ namespace WebApplication3.Controllers
             await _messageRepository.AddAsync(message);
             await _messageRepository.SaveAsync();
 
-            return RedirectToAction("Index");
+            return Json(new { success = true, message = "Сообщение добавлено." });
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetMessages()
+        {
+            var messages = await _messageRepository.GetAllAsync();
+            var users = await _userRepository.GetAllAsync();
+
+            var messagesWithUsers = messages
+                .OrderByDescending(m => m.MessageDate)
+                .Select(m => new MessageViewModel
+                {
+                    Id = m.Id,
+                    MessageText = m.MessageText,
+                    MessageDate = m.MessageDate,
+                    UserName = users.FirstOrDefault(u => u.Id == m.Id_User)?.Name ?? "Аноним"
+                })
+                .ToList();
+
+            return Json(messagesWithUsers);
+        }
+
+
 
         [HttpPost]
         public async Task<IActionResult> Logout()

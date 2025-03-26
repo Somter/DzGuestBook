@@ -26,8 +26,7 @@ namespace WebApplication3.Controllers
             var user = await _userRepository.GetByNameAsync(name);
             if (user == null || user.Pwd != _passwordHasher.HashPassword(pwd, user.Salt))
             {
-                ViewBag.Error = "Не верный логин или пароль";
-                return View();
+                return Json(new { success = false, message = "Не верный логин или пароль" });
             }
 
             var claims = new List<Claim>
@@ -39,8 +38,9 @@ namespace WebApplication3.Controllers
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
-            return RedirectToAction("Index", "Home");
+            return Json(new { success = true, redirectUrl = Url.Action("Index", "Home") });
         }
+
 
         public IActionResult Register() => View();
 
@@ -49,14 +49,12 @@ namespace WebApplication3.Controllers
         {
             if (pwd != confirmPwd)
             {
-                ViewBag.Error = "Пароли должны совпадать";
-                return View();
+                return Json(new { success = false, message = "Пароли должны совпадать" });
             }
 
             if (await _userRepository.GetByNameAsync(name) != null)
             {
-                ViewBag.Error = "Пользователь уже существует";
-                return View();
+                return Json(new { success = false, message = "Пользователь уже существует" });
             }
 
             var salt = _passwordHasher.GenerateSalt();
@@ -66,7 +64,7 @@ namespace WebApplication3.Controllers
             await _userRepository.AddAsync(user);
             await _userRepository.SaveAsync();
 
-            return RedirectToAction("Login");
+            return Json(new { success = true, redirectUrl = Url.Action("Login") });
         }
     }
 }

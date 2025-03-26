@@ -210,7 +210,7 @@ h1, h2 {
 /* Стили для всех кнопок */
 button, .styled-link {
     display: inline-block;
-    background-color: #6200ea; /* Фиолетовый */
+    background-color: #6200ea; 
     color: white;
     padding: 10px 15px;
     border: none;
@@ -224,16 +224,14 @@ button, .styled-link {
 }
 
     button:hover, .styled-link:hover {
-        background-color: #3700b3; /* Темно-фиолетовый при наведении */
+        background-color: #3700b3;
     }
 
-/* Контейнер ссылок */
 .link-container {
     text-align: center;
     margin-top: 15px;
 }
 
-/* Стили для ссылок "Регистрация" и "Войти как гость" */
 .styled-link {
     display: inline-block;
     padding: 10px 15px;

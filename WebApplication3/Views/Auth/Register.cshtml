@@ -11,7 +11,7 @@
     <p class="text-danger">@ViewBag.Error</p>
 }
 
-<form method="post">
+<form id="registerForm">
     <div>
         <label asp-for="Name"></label>
         <input asp-for="Name" class="form-control" required />
@@ -33,10 +33,40 @@
 </form>
 
 <div class="link-container">
-<a href="/Auth/Login" class="styled-link">Авторизация</a>
-<a href="/Home/Index" class="styled-link">Войти как гость</a>
-</div>  
+    <a href="/Auth/Login" class="styled-link">Авторизация</a>
+    <a href="/Home/Index" class="styled-link">Войти как гость</a>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        $(document).ready(function () {
+            // Обработка формы регистрации
+            $("#registerForm").submit(function (event) {
+                event.preventDefault();
+                var formData = {
+                    name: $("input[name='Name']").val(),
+                    pwd: $("input[name='Pwd']").val(),
+                    confirmPwd: $("input[name='confirmPwd']").val()
+                };
+
+                $.ajax({
+                    url: '/Auth/Register',
+                    type: 'POST',
+                    data: formData,
+                    success: function (response) {
+                        if (response.success) {
+                            window.location.href = response.redirectUrl; // Перенаправление
+                        } else {
+                            alert(response.message); // Показать ошибку
+                        }
+                    },
+                    error: function () {
+                        alert('Ошибка при регистрации.');
+                    }
+                });
+            });
+        });
+    </script>
 }

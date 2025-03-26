@@ -4,14 +4,14 @@
     ViewData["Title"] = "Вход";
 }
 
-<h2>Выход</h2>
+<h2>Авторизация</h2>
 
 @if (ViewBag.Error != null)
 {
     <p class="text-danger">@ViewBag.Error</p>
 }
 
-<form method="post">
+<form id="loginForm">
     <div>
         <label asp-for="Name"></label>
         <input asp-for="Name" class="form-control" required />
@@ -34,4 +34,33 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        $(document).ready(function () {
+            $("#loginForm").submit(function (event) {
+                event.preventDefault();
+
+                var formData = {
+                    name: $("input[name='Name']").val(),
+                    pwd: $("input[name='Pwd']").val()
+                };
+
+                $.ajax({
+                    url: '/Auth/Login',
+                    type: 'POST',
+                    data: formData,
+                    success: function (response) {
+                        if (response.success) {
+                            window.location.href = response.redirectUrl;
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('Ошибка при авторизации.');
+                    }
+                });
+            });
+        });
+    </script>
 }
