@@ -1,83 +1,175 @@
-﻿<div class="container">
-    <h1>Гостевая книга</h1>
+﻿@{
+    ViewData["Title"] = "Guestbook";
+    var page = Context.Request.Query["page"].ToString();
+}
 
-    @if (User.Identity.IsAuthenticated)
+<div class="container">
+    <h1 class="text-center">Гостевая книга</h1>
+
+    <div id="authButtons" style="@(page == "login" || page == "register" ? "display:none;" : "")">
+        <button id="showLogin" class="btn btn-primary">Войти</button>
+        <button id="showRegister" class="btn btn-secondary">Регистрация</button>
+    </div>
+
+    @if (page == "login")
     {
-        <p>Привет, @User.Identity.Name!</p>
-        <div class="form-container">
-            <form id="messageForm">
-                <textarea id="messageText" name="messageText" class="form-control" required placeholder="Введите сообщение..."></textarea>
-                <button type="submit">Добавить сообщение</button>
+        <div id="loginFormContainer">
+            <h3>Вход</h3>
+            <form id="loginForm">
+                <div class="mb-3">
+                    <label for="loginName" class="form-label">Имя:</label>
+                    <input type="text" class="form-control" id="loginName">
+                </div>
+                <div class="mb-3">
+                    <label for="loginPwd" class="form-label">Пароль:</label>
+                    <input type="password" class="form-control" id="loginPwd">
+                </div>
+                <button type="submit" class="btn btn-primary">Войти</button>
             </form>
-            <form method="post" action="/Home/Logout">
-                <button type="submit">Выход</button>
+        </div>
+    }
+    else if (page == "register")
+    {
+        <div id="registerFormContainer">
+            <h3>Регистрация</h3>
+            <form id="registerForm">
+                <div class="mb-3">
+                    <label for="registerName" class="form-label">Имя:</label>
+                    <input type="text" class="form-control" id="registerName">
+                </div>
+                <div class="mb-3">
+                    <label for="registerPwd" class="form-label">Пароль:</label>
+                    <input type="password" class="form-control" id="registerPwd">
+                </div>
+                <div class="mb-3">
+                    <label for="confirmPwd" class="form-label">Подтвердите пароль:</label>
+                    <input type="password" class="form-control" id="confirmPwd">
+                </div>
+                <button type="submit" class="btn btn-success">Зарегистрироваться</button>
             </form>
         </div>
     }
     else
     {
-        <div class="link-container">
-            <a href="/Auth/Login" class="styled-link">Войти в систему</a>
-            <a href="/Auth/Register" class="styled-link">Регистрация</a>
+        <div id="messageSection">
+            <h3>Оставить сообщение</h3>
+            <form id="messageForm">
+                <div class="mb-3">
+                    <label for="messageText" class="form-label">Ваше сообщение:</label>
+                    <textarea class="form-control" id="messageText" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Отправить</button>
+            </form>
+        </div>
+
+        <div id="logoutContainer">
+            <button id="logoutButton" class="btn btn-danger">Выйти</button>
+        </div>
+
+        <div id="messages-container" class="mt-4">
+            <p class="text-muted">Загрузка сообщений...</p>
         </div>
     }
-
-    <div class="messages-container" id="messages-container">
-        <p>Загрузка сообщений...</p>
-    </div>
 </div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-
     <script>
         $(document).ready(function () {
-            function loadMessages() {
-                $.getJSON("/Home/GetMessages", function (data) { 
-                    $("#messages-container").empty();
-                    if (data.length === 0) {
-                        $("#messages-container").append("<p>Еще нет сообщений.</p>");
-                    } else {
-                        data.forEach(function (msg) {
-                            $("#messages-container").append(`
-                                        <div class="message-container">
-                                            <div class="message-user">Пользователь: ${msg.userName}</div>
-                                            <div class="message-text">${msg.messageText}</div>
-                                            <div class="message-date">${new Date(msg.messageDate).toLocaleString()}</div>
-                                        </div>
-                                    `);
-                        });
-                    }
-                }).fail(function () {
-                    $("#messages-container").html("<p class='text-danger'>Ошибка загрузки сообщений.</p>");
-                });
-            }
-
+            checkAuthStatus();
             loadMessages();
 
-            $("#messageForm").submit(function (event) {
+            $("#showLogin").click(function () {
+                window.location.href = "?page=login";
+            });
+
+            $("#showRegister").click(function () {
+                window.location.href = "?page=register";
+            });
+
+            $(document).on("submit", "#loginForm", function (event) {
                 event.preventDefault();
-                let messageText = $("#messageText").val().trim();
+                let formData = { name: $("#loginName").val(), pwd: $("#loginPwd").val() };
 
-                if (messageText === "") return;
-
-                $.ajax({
-                    url: "/Home/AddMessage",
-                    type: "POST",
-                    data: { messageText: messageText },
-                    success: function (response) {
-                        if (response.success) {
-                            $("#messageText").val("");
-                            loadMessages(); 
-                        } else {
-                            alert(response.error);
-                        }
-                    },
-                    error: function () {
-                        alert("Ошибка отправки сообщения.");
+                $.post("/Home/Login", formData, function (response) {
+                    if (response.success) {
+                        window.location.href = "/";
+                    } else {
+                        alert(response.message);
                     }
                 });
             });
+
+            $(document).on("submit", "#registerForm", function (event) {
+                event.preventDefault();
+                let formData = {
+                    name: $("#registerName").val(),
+                    pwd: $("#registerPwd").val(),
+                    confirmPwd: $("#confirmPwd").val()
+                };
+
+                $.post("/Home/Register", formData, function (response) {
+                    if (response.success) {
+                        window.location.href = "/";
+                    } else {
+                        alert(response.message);
+                    }
+                });
+            });
+
+            $("#logoutButton").click(function () {
+                $.post("/Home/Logout", function (response) {
+                    if (response.success) {
+                        window.location.href = "/";
+                    }
+                });
+            });
+
+            function checkAuthStatus() {
+                $.get("/Home/CheckAuth", function (response) {
+                    if (response.isAuthenticated) {
+                        $("#authButtons").hide();
+                        $("#messageSection").show();
+                        $("#logoutContainer").show();
+                    } else {
+                        $("#authButtons").show();
+                        $("#messageSection").hide();
+                        $("#logoutContainer").hide();
+                    }
+                });
+            }
+
+            $(document).on("submit", "#messageForm", function (event) {
+                event.preventDefault();
+                let messageText = $("#messageText").val().trim();
+                if (messageText === "") return;
+
+                $.post("/Home/AddMessage", { messageText: messageText }, function (response) {
+                    if (response.success) {
+                        loadMessages();
+                        $("#messageText").val("");
+                    } else {
+                        alert(response.error);
+                    }
+                });
+            });
+
+            function loadMessages() {
+                $.getJSON("/Home/GetMessages", function (data) {
+                    let messagesHtml = "";
+                    if (data.length === 0) {
+                        messagesHtml = "<p class='text-muted'>Еще нет сообщений.</p>";
+                    } else {
+                        data.forEach(function (msg) {
+                            messagesHtml += `<div class='message-container border rounded p-2 mb-2'>
+                                                                    <div class='message-user fw-bold'>Пользователь: ${msg.userName}</div>
+                                                                    <div class='message-text'>${msg.messageText}</div>
+                                                                    <div class='message-date text-muted'>${new Date(msg.messageDate).toLocaleString()}</div>
+                                                                </div>`;
+                        });
+                    }
+                    $("#messages-container").html(messagesHtml);
+                });
+            }
 
             setInterval(loadMessages, 10000);
         });
